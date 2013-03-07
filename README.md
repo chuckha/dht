@@ -1,7 +1,5 @@
 # Go DB
 
-* In memory
+## Chord
 
-- db.Add(map) => Merge this map with main map overwriting any existing keys
-- db.Get('key') => Return the value of the key
-- db.Reset() => Delete all keys
+The underlying algorithm of this database is a [chord](http://pdos.csail.mit.edu/papers/ton:chord/paper-ton.pdf).
