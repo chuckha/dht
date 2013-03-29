@@ -40,7 +40,7 @@ func TestBetweenFailCases(t *testing.T) {
 
 func TestOneNode(t *testing.T) {
 	n := NewNode("10000")
-	n.Create()
+	n.create()
 	t.Log(n.Id)
 	if n.Id > max {
 		t.Errorf("This can't be > 1024!")
@@ -49,8 +49,9 @@ func TestOneNode(t *testing.T) {
 
 func TestFindSuccessorOfOneNode(t *testing.T) {
 	n := NewNode("10101")
-	n.Create()
-	node := n.FindSuccessor(uint64(100))
+	n.create()
+	num := uint64(100)
+	node := n.findSuccessor(&num)
 	if node != n {
 		t.Errorf("The one node is its own successor")
 	}
@@ -58,10 +59,11 @@ func TestFindSuccessorOfOneNode(t *testing.T) {
 
 func TestFindSuccessorOfTwoNodes(t *testing.T) {
 	n := NewNode("10101")
-	n.Create()
+	n.create()
 	n2 := NewNode("10000")
 
-	n2.Join(n)
+	var x *bool
+	n2.Join(n, x)
 	if n2.Fingers[0] != n {
 		t.Errorf("Successor of n2 should definitely be n")
 	}
@@ -69,23 +71,26 @@ func TestFindSuccessorOfTwoNodes(t *testing.T) {
 
 func TestGetOneNode(t *testing.T) {
 	n1 := NewNode("10000")
-	n1.Create()
-	n1.Data[123] = "hello world"
-	data := n1.Get(123)
-	if data != "hello world" {
+	n1.create()
+	d := Data{123, "hello world"}
+	n1.Data[d.K] = d.V
+	data := new(interface{})
+	n1.Get(&d, data)
+	if *data != "hello world" {
 		t.Errorf("Data should be the same")
 	}
 }
 
 func TestSetTwoNodes(t *testing.T) {
 	n1 := NewNode("10000")
-	n1.Create()
+	n1.create()
 	n2 := NewNode("10002")
-	n2.Join(n1)
-	n2.Stabilize()
-	n1.Stabilize()
-	n2.Stabilize()
-	n1.Stabilize()
+	var x *bool
+	n2.Join(n1, x)
+	n2.stabilize()
+	n1.stabilize()
+	n2.stabilize()
+	n1.stabilize()
 	t.Logf("n1: %v", n1.Id)
 	t.Logf("n2: %v", n2.Id)
 	t.Logf("n1 Succ: %v", n1.Fingers[0].Id)
@@ -93,16 +98,20 @@ func TestSetTwoNodes(t *testing.T) {
 	t.Logf("n1 pred: %v", n1.Predecessor.Id)
 	t.Logf("n2 pred: %v", n2.Predecessor.Id)
 
-	n1.Set(123, "hello world")
-	n1.Set(9431690416212140030, "Go on")
+	data1 := Data{123, "hello world"}
+	data2 := Data{9431690416212140030, "Go on"}
+	var b1, b2 *bool
 
-	if n1.Data[123] != "hello world" {
+	n1.Set(&data1, b1)
+	n1.Set(&data2, b2)
+
+	if n1.Data[data1.K] != "hello world" {
 		t.Errorf("n1 should be responsible for this key")
 	}
-	if n1.Data[9431690416212140030] == "Go on" {
+	if n1.Data[data2.K] == "Go on" {
 		t.Errorf("n1 Should not have this key")
 	}
-	if n2.Data[9431690416212140030] != "Go on" {
+	if n2.Data[data2.K] != "Go on" {
 		t.Errorf("n2 should be responsible for this key")
 	}
 
@@ -112,7 +121,7 @@ func TestSetTwoNodes(t *testing.T) {
 
 func TestStabilize(t *testing.T) {
 	n1 := NewNode("10000")
-	n1.Create()
+	n1.create()
 	n2 := NewNode("10001")
 	n3 := NewNode("10002")
 	n4 := NewNode("10003")
@@ -120,15 +129,16 @@ func TestStabilize(t *testing.T) {
 	t.Logf("n2 ID: %v", n2.Id)
 	t.Logf("n3 ID: %v", n3.Id)
 	t.Logf("n4 ID: %v", n4.Id)
-	n2.Join(n1)
-	n3.Join(n1)
-	n4.Join(n1)
+	var x *bool
+	n2.Join(n1, x)
+	n3.Join(n1, x)
+	n4.Join(n1, x)
 	t.Logf("Joined and Stabilizing")
 	for i := 0; i < 5; i ++ {
-		n4.Stabilize()
-		n3.Stabilize()
-		n2.Stabilize()
-		n1.Stabilize()
+		n4.stabilize()
+		n3.stabilize()
+		n2.stabilize()
+		n1.stabilize()
 	}
 	t.Logf("n1 Predecessor: %v", n1.Predecessor.Id)
 	t.Logf("n1 Successor: %v", n1.Fingers[0].Id)
