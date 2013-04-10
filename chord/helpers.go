@@ -3,6 +3,8 @@ package chord
 import (
 	"crypto/sha1"
 	"math/big"
+	"fmt"
+	"net/rpc"
 )
 
 func hashString(val string) *big.Int {
@@ -19,3 +21,13 @@ func between(val, start, end *big.Int) bool {
 	return true
 }
 
+func Call(address string, method string, request interface{}, reply interface{}) (interface{}) {
+	client, err := rpc.DialHTTP("tcp", address)
+	defer client.Close()
+	if err != nil {
+		fmt.Println(err)
+		panic(err)
+	}
+	err = client.Call(fmt.Sprintf("Node.%v", method), &request, &reply)
+	return reply
+}
