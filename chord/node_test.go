@@ -40,7 +40,6 @@ func TestBetweenFailCases(t *testing.T) {
 
 func TestOneNode(t *testing.T) {
 	n := NewNode("10000")
-	n.create()
 	t.Log(n.Id)
 	if n.Id > max {
 		t.Errorf("This can't be > 1024!")
@@ -49,7 +48,6 @@ func TestOneNode(t *testing.T) {
 
 func TestFindSuccessorOfOneNode(t *testing.T) {
 	n := NewNode("10101")
-	n.create()
 	num := uint64(100)
 	node := n.findSuccessor(&num)
 	if node != n {
@@ -59,7 +57,6 @@ func TestFindSuccessorOfOneNode(t *testing.T) {
 
 func TestFindSuccessorOfTwoNodes(t *testing.T) {
 	n := NewNode("10101")
-	n.create()
 	n2 := NewNode("10000")
 
 	var x *bool
@@ -71,7 +68,6 @@ func TestFindSuccessorOfTwoNodes(t *testing.T) {
 
 func TestGetOneNode(t *testing.T) {
 	n1 := NewNode("10000")
-	n1.create()
 	d := Data{123, "hello world"}
 	n1.Data[d.K] = d.V
 	data := new(interface{})
@@ -83,7 +79,6 @@ func TestGetOneNode(t *testing.T) {
 
 func TestSetTwoNodes(t *testing.T) {
 	n1 := NewNode("10000")
-	n1.create()
 	n2 := NewNode("10002")
 	var x *bool
 	n2.Join(n1, x)
@@ -121,7 +116,6 @@ func TestSetTwoNodes(t *testing.T) {
 
 func TestStabilize(t *testing.T) {
 	n1 := NewNode("10000")
-	n1.create()
 	n2 := NewNode("10001")
 	n3 := NewNode("10002")
 	n4 := NewNode("10003")
