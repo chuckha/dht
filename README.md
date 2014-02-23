@@ -33,7 +33,7 @@ Start the interface and type help to get a list of available commands.
 
 ## Installation
 
-        go install github.com/chuckha/dht/cli
+    $ go install github.com/chuckha/dht/cli
 
 ## Usage
 
