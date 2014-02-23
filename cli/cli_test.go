@@ -1,6 +1,7 @@
 package main
 
 import (
+	"dht"
 	"testing"
 )
 
@@ -10,4 +11,5 @@ func TestPortFn(t *testing.T) {
 	if port != "3333" {
 		t.Errorf("Port was not set correctly.\nExpected: %v\nGot: %v\n", "3333", port)
 	}
+
 }
